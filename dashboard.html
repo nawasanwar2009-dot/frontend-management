@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard - Task Manager</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <div class="dashboard-card">
+
+    <div class="dashboard-header">
+      <h1>Welcome, <span id="welcomeUsername">User</span></h1>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </div>
+
+    <div id="errorMessage" class="error-message"></div>
+
+    <form id="taskForm" class="task-form">
+      <input type="text" id="taskTitle" placeholder="Task Title" />
+      <button type="submit">Add Task</button>
+    </form>
+
+    <div class="task-list">
+      <h2>My Tasks</h2>
+      <ul id="taskList"></ul>
+      <p id="emptyState" class="empty-state" style="display: none;">
+        No tasks yet. Add one above!
+      </p>
+    </div>
+
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/helpers.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
