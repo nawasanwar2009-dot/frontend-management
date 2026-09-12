@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard - Task Manager</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
   <div class="dashboard-card">
-
     <div class="dashboard-header">
       <h1>Welcome, <span id="welcomeUsername">User</span></h1>
       <button id="logoutBtn" class="logout-btn">Logout</button>
@@ -16,23 +16,42 @@
 
     <div id="errorMessage" class="error-message"></div>
 
+    <!-- New task form. Title is required; description and priority are
+         optional/have a default, matching requirement 3 (priority must
+         be selectable when creating a task). -->
     <form id="taskForm" class="task-form">
-      <input type="text" id="taskTitle" placeholder="Task Title" />
-      <button type="submit">Add Task</button>
+      <div class="task-form-row">
+        <input type="text" id="taskTitle" placeholder="Task Title" />
+        <select id="taskPriority" title="Priority">
+          <option value="low">Low</option>
+          <option value="medium" selected>Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+      <textarea
+        id="taskDescription"
+        placeholder="Description (optional)"
+        rows="2"
+      ></textarea>
+      <button type="submit" id="addTaskBtn">Add Task</button>
     </form>
 
     <div class="task-list">
       <h2>My Tasks</h2>
+
+      <!-- Shown while the initial GET /tasks request is in flight -->
+      <p id="loadingState" class="loading-state">Loading tasks...</p>
+
       <ul id="taskList"></ul>
+
       <p id="emptyState" class="empty-state" style="display: none;">
         No tasks yet. Add one above!
       </p>
     </div>
-
   </div>
 
-  <script src="js/config.js"></script>
-  <script src="js/helpers.js"></script>
-  <script src="js/dashboard.js"></script>
+  <script src="config.js"></script>
+  <script src="helpers.js"></script>
+  <script src="dashboard.js"></script>
 </body>
 </html>

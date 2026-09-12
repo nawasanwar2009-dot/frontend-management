@@ -186,3 +186,264 @@ button:hover {
   color: #a0aec0;
   padding: 20px 0;
 }
+
+.loading-state {
+  text-align: center;
+  color: #718096;
+  padding: 20px 0;
+}
+
+/* ---------- Flash message (login page, after a session expires) ---------- */
+
+.flash-message {
+  background-color: #feebc8;
+  color: #7b341e;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  display: none;
+}
+
+/* ---------- New task form: title + priority side by side ---------- */
+
+.task-form {
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-form-row {
+  display: flex;
+  gap: 8px;
+}
+
+.task-form-row input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+}
+
+.task-form select,
+.task-edit select {
+  padding: 10px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  background: #fff;
+  font-size: 14px;
+}
+
+.task-form textarea,
+.task-edit textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+/* ---------- Task card layout ---------- */
+
+.task-item {
+  display: block;
+  background: #f7fafc;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.task-view {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.task-main {
+  flex: 1;
+  min-width: 0; /* allows long titles/descriptions to wrap instead of overflowing */
+}
+
+.task-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.task-title {
+  font-weight: bold;
+  word-break: break-word;
+}
+
+.task-title-done {
+  text-decoration: line-through;
+  color: #a0aec0;
+}
+
+.task-description {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #4a5568;
+  word-break: break-word;
+}
+
+.task-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.task-actions button {
+  width: auto;
+  padding: 8px 12px;
+  font-size: 13px;
+  margin-top: 0;
+  min-height: 36px; /* keeps buttons easy to tap on touch screens */
+}
+
+.status-btn {
+  background-color: #718096;
+}
+
+.status-btn:hover {
+  background-color: #4a5568;
+}
+
+.edit-btn {
+  background-color: #ecc94b;
+  color: #744210;
+}
+
+.edit-btn:hover {
+  background-color: #d69e2e;
+}
+
+.delete-btn {
+  background-color: #e53e3e;
+}
+
+.delete-btn:hover {
+  background-color: #c53030;
+}
+
+/* ---------- Badges (status / priority) ---------- */
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.priority-low {
+  background-color: #c6f6d5;
+  color: #276749;
+}
+
+.priority-medium {
+  background-color: #feebc8;
+  color: #7b341e;
+}
+
+.priority-high {
+  background-color: #fed7d7;
+  color: #9b2c2c;
+}
+
+.status-pending {
+  background-color: #e2e8f0;
+  color: #4a5568;
+}
+
+.status-completed {
+  background-color: #bee3f8;
+  color: #2c5282;
+}
+
+/* ---------- Inline edit form ---------- */
+
+.task-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-row {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-error {
+  color: #9b2c2c;
+  font-size: 13px;
+  display: none;
+}
+
+.save-btn {
+  background-color: #48bb78;
+}
+
+.save-btn:hover {
+  background-color: #38a169;
+}
+
+.cancel-btn {
+  background-color: #a0aec0;
+}
+
+.cancel-btn:hover {
+  background-color: #718096;
+}
+
+/* ---------- Responsive design (requirement 6) ---------- */
+
+/* Tablet and below: cards and forms get a bit tighter, but layout
+   is still mostly the same as desktop. */
+@media (max-width: 768px) {
+  body {
+    padding: 24px 12px;
+  }
+
+  .dashboard-card,
+  .auth-card {
+    padding: 20px;
+  }
+}
+
+/* Mobile: stack everything vertically so nothing overflows
+   horizontally, and make buttons full-width so they're easy to tap. */
+@media (max-width: 480px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .task-form-row {
+    flex-direction: column;
+  }
+
+  .task-view {
+    flex-direction: column;
+  }
+
+  .task-actions {
+    width: 100%;
+  }
+
+  .task-actions button {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .edit-row {
+    flex-direction: column;
+  }
+}

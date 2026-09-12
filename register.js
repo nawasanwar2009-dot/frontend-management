@@ -4,6 +4,7 @@ const passwordInput = document.getElementById("password");
 const confirmPasswordInput = document.getElementById("confirmPassword");
 const errorMessage = document.getElementById("errorMessage");
 const successMessage = document.getElementById("successMessage");
+const registerSubmitBtn = registerForm.querySelector("button[type='submit']");
 
 registerForm.addEventListener("submit", async function (event) {
   event.preventDefault();
@@ -29,6 +30,8 @@ registerForm.addEventListener("submit", async function (event) {
     return;
   }
 
+  const restoreButton = setButtonLoading(registerSubmitBtn, "Creating account...");
+
   try {
     await apiRequest("/register", "POST", {
       username: username,
@@ -43,5 +46,7 @@ registerForm.addEventListener("submit", async function (event) {
     }, 1500);
   } catch (err) {
     showError(errorMessage, err.message);
+    restoreButton();
   }
+  // stops a user from clicking "Register" again during the 1.5s delay.
 });
