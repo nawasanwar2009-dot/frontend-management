@@ -40,10 +40,12 @@ loginForm.addEventListener("submit", async function (event) {
   const restoreButton = setButtonLoading(loginSubmitBtn, "Logging in...");
 
   try {
+    // The last argument (false) tells apiRequest this call needs no token,
+    // so a 401 here is shown as "wrong password", not "session ended".
     const data = await apiRequest("/login", "POST", {
       username: username,
       password: password,
-    });
+    }, false);
 
     const token = data.token || data.access_token;
 

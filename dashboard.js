@@ -36,16 +36,26 @@ function capitalize(word) {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
+// Values the UI knows how to display. Anything else falls back to a
+// safe default, so an unexpected API value can never break the layout
+// or end up inside a CSS class name.
+const VALID_STATUSES = ["pending", "completed"];
+const VALID_PRIORITIES = ["low", "medium", "high"];
+
 // Normalizes whatever the API sends back so the rest of the code can
-// always rely on task.status and task.priority existing. If your API
-// uses different field names or values, this is the place to adjust.
+// always rely on task.status and task.priority existing and being
+// lowercase ("High" from the API becomes "high"). If your API uses
+// different field names or values, this is the place to adjust.
 function normalizeTask(task) {
+  const status = String(task.status || "pending").toLowerCase();
+  const priority = String(task.priority || "medium").toLowerCase();
+
   return {
     id: task.id,
     title: task.title || "",
     description: task.description || "",
-    status: task.status || "pending",
-    priority: task.priority || "medium",
+    status: VALID_STATUSES.includes(status) ? status : "pending",
+    priority: VALID_PRIORITIES.includes(priority) ? priority : "medium",
   };
 }
 
@@ -127,8 +137,8 @@ function buildEditForm(task) {
   wrapper.className = "task-edit";
 
   wrapper.innerHTML = `
-    <input type="text" class="edit-title" value="${escapeHtml(task.title)}" placeholder="Task title" />
-    <textarea class="edit-description" rows="2" placeholder="Description (optional)">${escapeHtml(task.description)}</textarea>
+    <input type="text" class="edit-title" placeholder="Task title" />
+    <textarea class="edit-description" rows="2" placeholder="Description (optional)"></textarea>
     <div class="edit-row">
       <select class="edit-priority">
         <option value="low">Low</option>
@@ -147,6 +157,11 @@ function buildEditForm(task) {
     </div>
   `;
 
+  // Fill the fields using .value (NOT by pasting text into the HTML
+  // string above). A title like  Say "hi"  would otherwise break out of
+  // the value="..." attribute and show a cut-off title.
+  wrapper.querySelector(".edit-title").value = task.title;
+  wrapper.querySelector(".edit-description").value = task.description;
   wrapper.querySelector(".edit-priority").value = task.priority;
   wrapper.querySelector(".edit-status").value = task.status;
 
@@ -203,6 +218,16 @@ async function addTask(title, description, priority) {
   }
 }
 
+// Disables / enables every field and button inside one edit form, so
+// nothing can be changed or clicked while the save request is running.
+function setEditFormDisabled(formWrapper, disabled) {
+  formWrapper
+    .querySelectorAll("input, textarea, select, button")
+    .forEach(function (control) {
+      control.disabled = disabled;
+    });
+}
+
 // Saves an edited task (title/description/priority/status) - covers
 // both requirement 1 (edit title/description) and part of requirement
 // 3 (priority editable from the edit form).
@@ -220,7 +245,10 @@ async function saveEdit(task, formWrapper, saveButton) {
     return;
   }
 
+  // Order matters: setButtonLoading first (it remembers the button was
+  // enabled), then lock the rest of the form.
   const restoreButton = setButtonLoading(saveButton, "Saving...");
+  setEditFormDisabled(formWrapper, true);
 
   try {
     await apiRequest(`/tasks/${task.id}`, "PUT", {
@@ -233,6 +261,7 @@ async function saveEdit(task, formWrapper, saveButton) {
     await loadTasks();
   } catch (err) {
     showError(editErrorBox, err.message);
+    setEditFormDisabled(formWrapper, false); // let the user fix and retry
     restoreButton();
   }
 }
@@ -303,3 +332,11 @@ logoutBtn.addEventListener("click", function () {
 });
 
 loadTasks();
+
+// If the browser restores this page from its back/forward cache after
+// logout, the script does not run again - so re-check the token here.
+window.addEventListener("pageshow", function (event) {
+  if (event.persisted) {
+    requireLogin();
+  }
+});

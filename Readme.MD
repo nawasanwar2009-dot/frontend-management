@@ -19,7 +19,8 @@ frontend-management/
 ├── helpers.js              (Shared helpers, incl. the apiRequest fetch wrapper)
 ├── login.js
 ├── register.js
-└── dashboard.js
+├── dashboard.js
+└── screenshots/          (Screenshots of the completed application)
 ```
 
 ## Features
@@ -51,24 +52,26 @@ frontend-management/
 - **Responsive Design** — Layout adapts for tablet and mobile screens: task
   cards stack vertically, forms never overflow, and buttons keep a
   comfortable tap target size.
-- **Auth Error Handling** — Any `401` response from the API (missing,
-  expired, or rejected token) automatically clears the stored session and
-  redirects to the login page with a "Your session has ended" message.
+- **Auth Error Handling** — Any `401` response from a protected endpoint
+  (missing, expired, or rejected token) automatically clears the stored
+  session and redirects to the login page with a "Your session has ended"
+  message. `/login` and `/register` are excluded, so a wrong password shows
+  the API's own error instead of "session ended".
 
 ## Setup & Running
 
 1. Make sure your Flask Task Management API is running. By default this
    project expects it at:
 
-   ```
+```
    http://127.0.0.1:5000
-   ```
+```
 
    If your API runs somewhere else, open `config.js` and change:
 
-   ```js
+```js
    const API_BASE_URL = "http://127.0.0.1:5000";
-   ```
+```
 
 2. Open `index.html` directly in your browser (double-click it, or right
    click → "Open with" → your browser). No build step or server is required
@@ -78,10 +81,10 @@ frontend-management/
      or "file://" issue), instead serve the folder with a simple local
      server, for example:
 
-     ```
+```
      cd frontend-management
      python -m http.server 5500
-     ```
+```
 
      Then visit `http://127.0.0.1:5500` in your browser.
 
@@ -147,3 +150,18 @@ adjust are:
   state and block double-submits.
 - There is no build tool, npm, or bundler involved — these are plain files
   that any browser can run directly.
+
+## Screenshots
+
+Screenshots of the completed application are in the `screenshots/` folder:
+
+| Screen | File |
+| ------ | ---- |
+| Login page | `screenshots/01-login.png` |
+| Login with wrong password | `screenshots/02-login-error.png` |
+| Dashboard with tasks (desktop) | `screenshots/03-dashboard-desktop.png` |
+| Editing a task | `screenshots/04-edit-task.png` |
+| Delete confirmation | `screenshots/05-delete-confirm.png` |
+| Empty state (no tasks) | `screenshots/06-empty-state.png` |
+| Session-ended message | `screenshots/07-session-ended.png` |
+| Mobile layout | `screenshots/08-mobile.png` |

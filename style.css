@@ -447,3 +447,44 @@ button:hover {
     flex-direction: column;
   }
 }
+/* ---------- Fixes added after review ---------- */
+
+/* The edit form's title input had no styling of its own. */
+.task-edit input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.edit-row select {
+  flex: 1;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Mobile: 44px is the usual minimum comfortable tap size, and 16px text
+   stops iPhones from zooming into a field when you tap it. */
+@media (max-width: 480px) {
+  button,
+  .task-actions button,
+  .logout-btn {
+    min-height: 44px;
+  }
+
+  input,
+  select,
+  textarea,
+  .task-form input,
+  .task-edit input {
+    font-size: 16px;
+  }
+
+  .task-actions button {
+    flex: 1 1 auto;
+  }
+}

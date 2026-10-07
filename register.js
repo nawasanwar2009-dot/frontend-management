@@ -36,7 +36,7 @@ registerForm.addEventListener("submit", async function (event) {
     await apiRequest("/register", "POST", {
       username: username,
       password: password,
-    });
+    }, false); // false = no token needed for registering
 
     successMessage.textContent = "Registration successful! Redirecting to login...";
     successMessage.style.display = "block";

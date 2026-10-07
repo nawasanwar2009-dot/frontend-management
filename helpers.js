@@ -110,19 +110,25 @@ function escapeHtml(text) {
 // directly. It attaches the JWT automatically, parses JSON, and turns
 // non-OK responses into a thrown Error with a readable message.
 //
-// It also centralizes auth-error handling: if the API responds 401
-// (unauthorized), we treat that as "the token is missing/expired/
-// rejected" and immediately log the user out and redirect, per the
-// assignment's requirement #7. Callers don't need to check for 401
-// themselves.
+// requiresAuth (4th argument, default true):
+//   true  -> protected endpoints (/tasks...). A missing/expired/rejected
+//            token ends the session and sends the user to the login page.
+//   false -> /login and /register. A 401 there just means "wrong
+//            username or password", so we must NOT treat it as an
+//            expired session - we show the API's own error message.
 
-async function apiRequest(path, method = "GET", body = null) {
+async function apiRequest(path, method = "GET", body = null, requiresAuth = true) {
   const headers = {
     "Content-Type": "application/json",
   };
 
-  const token = getToken();
-  if (token) {
+  if (requiresAuth) {
+    const token = getToken();
+    if (!token) {
+      // Token is MISSING: no point calling the API at all.
+      handleAuthError();
+      throw new Error("Session expired.");
+    }
     headers["Authorization"] = "Bearer " + token;
   }
 
@@ -147,17 +153,8 @@ async function apiRequest(path, method = "GET", body = null) {
     );
   }
 
-  // A 401 means "you're not authenticated" - either there was no
-  // token, it expired, or the backend rejected it. This is exactly
-  // the case the assignment asks us to handle globally.
-  if (response.status === 401) {
-    handleAuthError();
-    // Throw anyway so any awaiting code stops running instead of
-    // continuing as if the request succeeded. The redirect above
-    // means the page is navigating away regardless.
-    throw new Error("Session expired.");
-  }
-
+  // Read the JSON body first, because we need it to tell a rejected
+  // token apart from an ordinary validation error.
   let data = null;
   try {
     data = await response.json();
@@ -165,9 +162,24 @@ async function apiRequest(path, method = "GET", body = null) {
     data = null; // Response had no JSON body (e.g. a 204 No Content).
   }
 
+  // Token EXPIRED or REJECTED by the backend.
+  //   401 -> expired / missing token
+  //   422 + "msg" -> flask-jwt-extended's reply for a malformed token
+  // (a normal validation 422 has no "msg", so it is not treated as a
+  // session problem)
+  const tokenRejected =
+    response.status === 401 || (response.status === 422 && data && data.msg);
+
+  if (requiresAuth && tokenRejected) {
+    handleAuthError();
+    // Throw anyway so any awaiting code stops running instead of
+    // continuing as if the request succeeded.
+    throw new Error("Session expired.");
+  }
+
   if (!response.ok) {
     const message =
-      (data && (data.message || data.error)) ||
+      (data && (data.message || data.error || data.msg)) ||
       `Request failed with status ${response.status}`;
     throw new Error(message);
   }
